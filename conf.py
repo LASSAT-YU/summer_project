@@ -6,17 +6,17 @@ from string import Template
 
 class MasterPermissions:
     class PRIV:
-        TOURNAMENT = {'@officer', '@leader'}
+        TOURNAMENT = {'summer-proj'}
         SETTINGS = TOURNAMENT  # Set to equal for now nothing more needed
         UNRANKED = TOURNAMENT  # Set to equal for now nothing more needed
         REGISTRATION = TOURNAMENT  # Set to equal for now nothing more needed
         TOP = TOURNAMENT
 
     class Channels:
-        TOURNAMENT = {'tournament'}
-        UNRANKED = {'unranked-challenge'}
-        REGISTRATION = {'bazooka-supreme-eng'}
-        TOP_ONLY = {'general', 'bazooka-supreme-eng'}
+        TOURNAMENT = {'software-summer-project'}
+        UNRANKED = TOURNAMENT
+        REGISTRATION = TOURNAMENT
+        TOP_ONLY = TOURNAMENT
         TOP = TOP_ONLY.union(TOURNAMENT).union(UNRANKED)
         SETTINGS = TOP
 

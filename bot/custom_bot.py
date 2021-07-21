@@ -3,7 +3,10 @@ import logging
 import discord
 from discord.ext import commands
 
+from bot.registration.cog_registration import CogRegistration
 from bot.settings.cog_settings import CogSettings
+from bot.tournament.cog_tournament import CogTournament
+from bot.unranked.cog_unranked import CogUnranked
 from conf import Conf
 from utils.log import log
 from utils.misc import export
@@ -19,7 +22,13 @@ class Bot(commands.Bot):
 
         self.db = args['db']
         self.cog_settings = CogSettings(self.db)
+        self.cog_tournament = CogTournament(self.db)
+        self.cog_unranked = CogUnranked(self.db)
+        self.cog_registration = CogRegistration(self.db)
         self.add_cog(self.cog_settings)
+        self.add_cog(self.cog_tournament)
+        self.add_cog(self.cog_unranked)
+        self.add_cog(self.cog_registration)
 
         @self.check
         def check_channel(ctx):
@@ -74,8 +83,8 @@ class Bot(commands.Bot):
                 return True
             else:
                 return any(
-                        role.name in conf.Permissions.PRIV_ROLES for role in
-                        ctx.author.roles)
+                    role.name in conf.Permissions.PRIV_ROLES for role in
+                    ctx.author.roles)
 
         @self.command(**conf.Command.EXPORT)
         @commands.check(is_dm_or_priv_role)
@@ -117,7 +126,7 @@ class Bot(commands.Bot):
         @self.event
         async def on_member_join(member):
             await member.guild.system_channel.send(conf.WELCOME_MSG.substitute(
-                    mention=member.mention))
+                mention=member.mention))
 
         @self.event
         async def on_member_remove(member):

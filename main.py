@@ -24,14 +24,15 @@ bot: Bot
     HTML Control Section
     Had to put them in the same file to resolve issues with getting 
     access to current tournament variable values
-
+    
 """
-web_interface = flask.Flask('Index')
+web_interface = flask.Flask('Board')
 
 
 @web_interface.route('/')
 def home():
-    return flask.render_template('index.html')
+    return flask.render_template(
+        'board.html', content=bot.get_tournament_as_html())
 
 
 def run():

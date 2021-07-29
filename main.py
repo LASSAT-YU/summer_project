@@ -1,7 +1,6 @@
 import os
 from threading import Thread
 
-import discord
 import flask
 from discord.ext import commands
 from waitress import serve
@@ -36,7 +35,7 @@ def home():
 
 
 def run():
-    serve(web_interface, host="0.0.0.0", port=8080)
+    serve(web_interface, host="0.0.0.0", port=80)
 
 
 def display_start():

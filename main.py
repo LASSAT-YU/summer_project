@@ -30,8 +30,7 @@ web_interface = flask.Flask('Board')
 
 @web_interface.route('/')
 def home():
-    return flask.render_template(
-        'board.html', content=bot.get_tournament_as_html())
+    return flask.render_template('index.html')
 
 
 def run():

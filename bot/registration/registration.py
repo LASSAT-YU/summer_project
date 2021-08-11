@@ -2,7 +2,7 @@ from typing import List, Union
 
 from discord.ext import commands
 
-from bot.common.player import Player
+from bot.common.user_custom import UserCustom
 from bot.registration.category import Category
 
 
@@ -59,37 +59,37 @@ class Registration:
                 assert isinstance(cat_number, int)
                 return cat_number
 
-    def register(self, player: Player, cat_number: Union[int, str]):
+    def register(self, user: UserCustom, cat_number: Union[int, str]):
         cat_number = self.resolve_cat_number(cat_number)
         if isinstance(cat_number, List):
             for x in cat_number:
-                self.register(player, x)
+                self.register(user, x)
             return  # Do nothing more already called
         self.confirm_cat_exists(cat_number, True)
-        self.categories[cat_number].add(player)
+        self.categories[cat_number].add(user)
 
-    def unregister(self, player: Player, cat_number: Union[int, str]):
+    def unregister(self, user: UserCustom, cat_number: Union[int, str]):
         cat_number = self.resolve_cat_number(cat_number)
         if isinstance(cat_number, List):
             for x in cat_number:
-                self.unregister(player, x)
+                self.unregister(user, x)
             return  # Do nothing more already called
 
         self.confirm_cat_exists(cat_number, True)
-        self.categories[cat_number].remove(player)
+        self.categories[cat_number].remove(user)
 
     def set_msg(self, msg: str):
         self.message = msg
 
     def __str__(self):
 
-        total_players = 0
+        total_users = 0
         result = f'REGISTRATION\n{self.message}\n\n'
         for key in self.categories.keys():
-            total_players += len(self.categories[key])
+            total_users += len(self.categories[key])
             result += f'{self.categories[key]}\n'
 
-        result += f'Total Number of Players: {total_players}'
+        result += f'Total Number of Users: {total_users}'
         return result
 
     def confirm_cat_exists(self, number: int, should_exist: bool):

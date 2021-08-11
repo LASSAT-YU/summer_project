@@ -5,8 +5,6 @@ from discord.ext import commands
 
 from bot.registration.cog_registration import CogRegistration
 from bot.settings.cog_settings import CogSettings
-from bot.tournament.cog_tournament import CogTournament
-from bot.unranked.cog_unranked import CogUnranked
 from conf import Conf
 from utils.log import log
 from utils.misc import export
@@ -22,12 +20,8 @@ class Bot(commands.Bot):
 
         self.db = args['db']
         self.cog_settings = CogSettings(self.db)
-        self.cog_tournament = CogTournament(self.db)
-        self.cog_unranked = CogUnranked(self.db)
         self.cog_registration = CogRegistration(self.db)
         self.add_cog(self.cog_settings)
-        self.add_cog(self.cog_tournament)
-        self.add_cog(self.cog_unranked)
         self.add_cog(self.cog_registration)
 
         @self.check
@@ -75,7 +69,7 @@ class Bot(commands.Bot):
             Requests that the bot saves to secondary storage immediately
             :param ctx: The Context
             """
-            self.cog_tournament.save()
+            self.cog_registration.save()
             await ctx.author.send("Saved")
 
         def is_dm_or_priv_role(ctx):
@@ -122,19 +116,6 @@ class Bot(commands.Bot):
         @self.event
         async def on_ready():
             log(f'Successfully logged in as {self.user}')
-
-        @self.event
-        async def on_member_join(member):
-            await member.guild.system_channel.send(conf.WELCOME_MSG.substitute(
-                mention=member.mention))
-
-        @self.event
-        async def on_member_remove(member):
-            channel = self.get_channel(conf.INTERNAL_CHANNEL_ID)
-            await channel.send(conf.MEMBER_LEAVE.substitute(name=f'{member}'))
-
-    def get_tournament_as_html(self):
-        return self.cog_tournament.as_html()
 
     def export(self):
         export(Conf.EXPORT_FILE_NAME, self.db)

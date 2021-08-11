@@ -1,10 +1,10 @@
 from dataclasses import dataclass, field
 
-from bot.common.player_list import PlayerList
+from bot.common.user_list import UserList
 
 
 @dataclass
-class Category(PlayerList):
+class Category(UserList):
     number: int = 1
     name: str = 'General'
     _name: str = field(init=False, repr=False)
@@ -23,6 +23,6 @@ class Category(PlayerList):
         self._invalidate_calculated()
 
     def get_str_rep(self):
-        players = self.players_as_str("\n")
+        users = self.users_as_str("\n")
         return f'Category: {self.number} - {self.name} ({len(self)})\n' \
-               f'{players}\n'
+               f'{users}\n'

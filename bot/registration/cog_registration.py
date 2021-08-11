@@ -5,7 +5,7 @@ import discord
 from discord.ext import commands
 
 from bot.common.cog_common import CogCommon
-from bot.common.player import Player
+from bot.common.user_custom import UserCustom
 from bot.registration.registration import Registration
 from conf import Conf, DBKeys
 from utils import db_cache
@@ -79,22 +79,22 @@ class CogRegistration(CogCommon, name='Registration'):
     @commands.has_any_role(*conf.Permissions.PRIV_ROLES)
     async def register_other(self, ctx, user: discord.User,
                              cat_number: Union[int, str] = None):
-        player = Player.get_player_from_user(user)
-        self.data.register(player, cat_number)
+        user = UserCustom.get_user_custom(user)
+        self.data.register(user, cat_number)
         self.save()
         await self.send_data_str(ctx,
-                                 f"{player} registered for category "
+                                 f"{user} registered for category "
                                  f"{cat_number}")
 
     @base.command(**conf.Command.UNREGISTER_OTHER)
     @commands.has_any_role(*conf.Permissions.PRIV_ROLES)
     async def unregister_other(self, ctx, user: discord.User,
                                cat_number: Union[int, str] = None):
-        player = Player.get_player_from_user(user)
-        self.data.unregister(player, cat_number)
+        user = UserCustom.get_user_custom(user)
+        self.data.unregister(user, cat_number)
         self.save()
         await self.send_data_str(ctx,
-                                 f'{player} removed from category '
+                                 f'{user} removed from category '
                                  f'{cat_number}')
 
     @base.command(**conf.Command.SET_MESSAGE)

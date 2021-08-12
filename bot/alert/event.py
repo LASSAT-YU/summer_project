@@ -3,6 +3,7 @@ from datetime import datetime, timedelta
 from math import ceil
 
 from bot.common.user_custom import UserCustom
+from conf import Conf
 
 
 @dataclass
@@ -19,7 +20,8 @@ class Event:
         return NotImplemented
 
     def alert_text(self):
-        return f'"{self.name}" starts at {self.next_time}' \
+        return f'<@&{Conf.Alert.ALERT_ROLE_ID}> "{self.name}" starts at ' \
+               f'{self.next_time}' \
                + ('' if not self.expired else ' (FINAL OCCURRENCE)')
 
     def advance_alert_time(self):

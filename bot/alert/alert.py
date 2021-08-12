@@ -4,7 +4,7 @@ from typing import List
 
 from discord.ext import commands
 
-from bot.alert.alert_data import Event
+from bot.alert.event import Event
 from bot.common.user_custom import UserCustom
 from conf import Conf
 from utils.log import log

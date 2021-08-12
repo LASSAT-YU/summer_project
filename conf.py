@@ -127,6 +127,7 @@ class Conf:
 
     class Alert:
         ALERT_CHANNEL_ID = 865055003793162250
+        ALERT_ROLE_ID = 867545138083659796
         ALERT_POLL_INTERVAL = 60
         BASE_GROUP = {'name': 'a',
                       'help': 'Grouping for Alert Commands',

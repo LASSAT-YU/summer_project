@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from discord.ext import commands
+from discord.ext import commands, tasks
 
 from bot.alert.alert import Alert
 from bot.common.cog_common import CogCommon
@@ -8,7 +8,6 @@ from bot.common.user_custom import UserCustom
 from conf import Conf, DBKeys
 from utils import db_cache
 from utils.log import log
-from utils.timer_funcs import set_interval
 
 conf = Conf.Alert
 """Map class with setting for this cog to variable"""
@@ -20,26 +19,21 @@ class CogAlert(CogCommon, name='Alert'):
     def __init__(self, db: db_cache, bot):
         super().__init__(db, conf=conf, db_key=DBKeys.ALERT,
                          data_def_constructor=Alert)
-        self.timer = None
-        self.start_timer()
         self.bot = bot
+        self.poll_alerts.start()
 
-    def poll_alerts(self):
-        self.data.check_next_alert(self.bot)
+    @tasks.loop(seconds=conf.ALERT_POLL_INTERVAL)
+    async def poll_alerts(self):
+        if await self.data.check_next_alert(self.bot):
+            # Save if an alert was sent
+            self.save()
         if self.data.next_alert is None:
-            self.timer.set()
-            self.timer = None
+            log('No pending Alerts - Polling Stopping')
+            self.poll_alerts.cancel()
 
-    def start_timer(self):
-        """
-        Ensures the timer to poll the alerts is started
-        :return:
-        """
-        if self.timer is None:
-            self.timer = set_interval(conf.ALERT_POLL_INTERVAL,
-                                      self.poll_alerts)
-            log(f'Alert Poll Timer Started for every '
-                f'{conf.ALERT_POLL_INTERVAL} seconds')
+    @poll_alerts.before_loop
+    async def before_poll_alerts(self):
+        await self.bot.wait_until_ready()
 
     ##########################################################################
     # BASE GROUP
@@ -69,7 +63,10 @@ class CogAlert(CogCommon, name='Alert'):
             next_time)
         self.save()
         await self.send_data_str(ctx, f'New alert "{name}" added.')
-        self.start_timer()  # Ensure the timer is started
+
+        # Ensure the timer is started
+        if not self.poll_alerts.is_running():
+            self.poll_alerts.start()
 
     @base.command(**conf.Command.REMOVE)
     @commands.has_any_role(*conf.Permissions.PRIV_ROLES)

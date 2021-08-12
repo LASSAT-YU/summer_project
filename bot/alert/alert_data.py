@@ -19,7 +19,8 @@ class AlertData:
         return NotImplemented
 
     def alert_text(self):
-        return f'"{self.event_name}" starts at {self.next_time}'
+        return f'"{self.event_name}" starts at {self.next_time}' \
+               + ('' if not self.expired else ' (FINAL OCCURRENCE)')
 
     def advance_alert_time(self):
         if not self.expired:
@@ -40,5 +41,5 @@ class AlertData:
 
     def __str__(self):
         return f'ID: {self.id_}, "{self.event_name}" every ' \
-               f'{self.repeat_interval.days} days. Next alert for ' \
+               f'{self.repeat_interval.days} days. Next occurs at ' \
                f'{self.next_time}'

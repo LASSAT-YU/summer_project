@@ -1,3 +1,4 @@
+import logging
 from datetime import datetime, timedelta
 from typing import List
 
@@ -56,16 +57,28 @@ class Alert:
                     next_alert = alert
             self.next_alert = next_alert
 
-    def check_next_alert(self, bot):
-        if self._next_alert_target is not None:
-            if datetime.now() > self._next_alert_target:
-                channel = bot.get_channel(Conf.Alert.ALERT_CHANNEL_ID)
-                log(self.next_alert.alert_text())
-                # asyncio.run(channel.send(self.next_alert.alert_text()))
-                self.next_alert.advance_alert_time()
-                if self.next_alert.expired:
-                    self.remove(self.next_alert.id_)
-                self.find_next_event()
+    async def check_next_alert(self, bot) -> bool:
+        """
+        Checks to see if the next alert should be fired now
+        :param bot: handle to the bot to use to send the message
+        :return: True if an alert was fired else false
+        """
+        result = False
+        try:
+            if self._next_alert_target is not None:
+                if datetime.now() > self._next_alert_target:
+                    channel = bot.get_channel(Conf.Alert.ALERT_CHANNEL_ID)
+                    await channel.send(self.next_alert.alert_text())
+                    result = True
+                    self.next_alert.advance_alert_time()
+                    if self.next_alert.expired:
+                        log(f'Alert Expired: {self.next_alert}')
+                        self.remove(self.next_alert.id_)
+                    self.find_next_event()
+            return result
+        except Exception as e:
+            log(f'Exception checking next alert: {e}', logging.ERROR)
+            return False
 
     def get_next_id(self):
         result = self.next_id
@@ -76,6 +89,7 @@ class Alert:
         result = f'Alerts:\n'
         for alert in self.data:
             result += f'- {alert}\n'
+        result += '---'
         return result
 
     @property

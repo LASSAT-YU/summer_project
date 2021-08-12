@@ -42,6 +42,10 @@ def set_interval(interval: float, function: callable, args: list = None,
     :return: The a thread event that can be set to cancel the timer (eg
         result.set())
     """
+    if args is None:
+        args = []
+    if kwargs is None:
+        kwargs = {}
 
     class MyThread(threading.Thread):
         def __init__(self, event):

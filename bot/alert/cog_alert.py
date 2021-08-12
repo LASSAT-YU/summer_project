@@ -20,20 +20,21 @@ class CogAlert(CogCommon, name='Alert'):
         super().__init__(db, conf=conf, db_key=DBKeys.ALERT,
                          data_def_constructor=Alert)
         self.bot = bot
-        self.poll_alerts.start()
+        self.poll_events.start()
 
     @tasks.loop(seconds=conf.ALERT_POLL_INTERVAL)
-    async def poll_alerts(self):
-        if await self.data.check_next_alert(self.bot):
+    async def poll_events(self):
+        if await self.data.check_next_event(self.bot):
             # Save if an alert was sent
             self.save()
-        if self.data.next_alert is None:
+        if self.data.next_event is None:
             log('No pending Alerts - Polling Stopping')
-            self.poll_alerts.cancel()
+            self.poll_events.cancel()
 
-    @poll_alerts.before_loop
+    @poll_events.before_loop
     async def before_poll_alerts(self):
         await self.bot.wait_until_ready()
+        log('Poll Alerts Loop Started')
 
     ##########################################################################
     # BASE GROUP
@@ -47,7 +48,7 @@ class CogAlert(CogCommon, name='Alert'):
     async def display(self, ctx):
         await self.send_data_str(ctx,
                                  f'Alerts sent {self.data.lead_time} minutes '
-                                 f'before alert.')
+                                 f'before event.')
 
     ##########################################################################
     # PRIVILEGED COMMANDS
@@ -62,11 +63,11 @@ class CogAlert(CogCommon, name='Alert'):
             name,
             next_time)
         self.save()
-        await self.send_data_str(ctx, f'New alert "{name}" added.')
+        await self.send_data_str(ctx, f'New event "{name}" added.')
 
         # Ensure the timer is started
-        if not self.poll_alerts.is_running():
-            self.poll_alerts.start()
+        if not self.poll_events.is_running():
+            self.poll_events.start()
 
     @base.command(**conf.Command.REMOVE)
     @commands.has_any_role(*conf.Permissions.PRIV_ROLES)
@@ -81,4 +82,4 @@ class CogAlert(CogCommon, name='Alert'):
         self.data.set_lead_time(lead_time_in_min)
         self.save()
         await ctx.send(
-            f'Lead time set to {lead_time_in_min} minutes before the alert')
+            f'Lead time set to {lead_time_in_min} minutes before the event')

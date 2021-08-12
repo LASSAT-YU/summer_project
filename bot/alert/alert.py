@@ -4,7 +4,7 @@ from typing import List
 
 from discord.ext import commands
 
-from bot.alert.alert_data import AlertData
+from bot.alert.alert_data import Event
 from bot.common.user_custom import UserCustom
 from conf import Conf
 from utils.log import log
@@ -13,8 +13,8 @@ from utils.log import log
 class Alert:
     def __init__(self):
         self.lead_time = 60
-        self.data: List[AlertData] = []
-        self._next_alert = None
+        self.data: List[Event] = []
+        self._next_event = None
         self._next_alert_target = None
         self.next_id = 0
 
@@ -25,23 +25,23 @@ class Alert:
                 f'Repeat interval must be 0 for once only or greater but '
                 f'{repeat_interval} received')
         self.data.append(
-            AlertData(self.get_next_id(), user,
-                      timedelta(days=repeat_interval), name,
-                      next_time))
+            Event(self.get_next_id(), user,
+                  timedelta(days=repeat_interval), name,
+                  next_time))
         self.find_next_event()
 
     def remove(self, id_):
         element_to_rem = None
-        for alert in self.data:
-            if alert.id_ is id_:
-                element_to_rem = alert
+        for event in self.data:
+            if event.id_ is id_:
+                element_to_rem = event
                 break
         if element_to_rem is None:
             raise commands.errors.UserInputError(
-                f'No alert found with id {id_}')
+                f'No event found with id {id_}')
         else:
             self.data.remove(element_to_rem)
-            if element_to_rem == self.next_alert:
+            if element_to_rem == self.next_event:
                 self.find_next_event()
 
     def set_lead_time(self, value: int):
@@ -49,17 +49,17 @@ class Alert:
 
     def find_next_event(self):
         if len(self.data) <= 0:
-            self.next_alert = None
+            self.next_event = None
         else:
-            next_alert = self.data[0]
-            for alert in self.data:
-                if alert < next_alert:
-                    next_alert = alert
-            self.next_alert = next_alert
+            next_event = self.data[0]
+            for event in self.data:
+                if event < next_event:
+                    next_event = event
+            self.next_event = next_event
 
-    async def check_next_alert(self, bot) -> bool:
+    async def check_next_event(self, bot) -> bool:
         """
-        Checks to see if the next alert should be fired now
+        Checks to see if the next event should be alerted now
         :param bot: handle to the bot to use to send the message
         :return: True if an alert was fired else false
         """
@@ -68,16 +68,16 @@ class Alert:
             if self._next_alert_target is not None:
                 if datetime.now() > self._next_alert_target:
                     channel = bot.get_channel(Conf.Alert.ALERT_CHANNEL_ID)
-                    await channel.send(self.next_alert.alert_text())
+                    await channel.send(self.next_event.alert_text())
                     result = True
-                    self.next_alert.advance_alert_time()
-                    if self.next_alert.expired:
-                        log(f'Alert Expired: {self.next_alert}')
-                        self.remove(self.next_alert.id_)
+                    self.next_event.advance_alert_time()
+                    if self.next_event.expired:
+                        log(f'Event Expired: {self.next_event}')
+                        self.remove(self.next_event.id_)
                     self.find_next_event()
             return result
         except Exception as e:
-            log(f'Exception checking next alert: {e}', logging.ERROR)
+            log(f'Exception checking next event: {e}', logging.ERROR)
             return False
 
     def get_next_id(self):
@@ -86,21 +86,25 @@ class Alert:
         return result
 
     def __str__(self):
-        result = f'Alerts:\n'
-        for alert in self.data:
-            result += f'- {alert}\n'
+        result = '' \
+            if self.next_event is None else \
+            f'Next alert at {self._next_alert_target} ' \
+            f'for event ID: {self.next_event.id_}\n\n'
+        result += f'Events:\n'
+        for event in self.data:
+            result += f'- {event}\n'
         result += '---'
         return result
 
     @property
-    def next_alert(self):
-        return self._next_alert
+    def next_event(self):
+        return self._next_event
 
-    @next_alert.setter
-    def next_alert(self, value):
-        self._next_alert = value
+    @next_event.setter
+    def next_event(self, value):
+        self._next_event = value
         if value is None:
             self._next_alert_target = None
         else:
-            self._next_alert_target = self.next_alert.next_time \
+            self._next_alert_target = self.next_event.next_time \
                                       - timedelta(minutes=self.lead_time)

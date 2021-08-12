@@ -6,20 +6,20 @@ from bot.common.user_custom import UserCustom
 
 
 @dataclass
-class AlertData:
+class Event:
     id_: int
     created_by: UserCustom
     repeat_interval: timedelta  # Interval in days
-    event_name: str
+    name: str
     next_time: datetime
 
     def __lt__(self, other):
-        if isinstance(other, AlertData):
+        if isinstance(other, Event):
             return self.next_time < other.next_time
         return NotImplemented
 
     def alert_text(self):
-        return f'"{self.event_name}" starts at {self.next_time}' \
+        return f'"{self.name}" starts at {self.next_time}' \
                + ('' if not self.expired else ' (FINAL OCCURRENCE)')
 
     def advance_alert_time(self):
@@ -33,13 +33,12 @@ class AlertData:
                 temp = self.repeat_interval * multiple
                 self.next_time += temp
                 assert self.next_time > datetime.now()
-        # TODO: Ensure time is now in the future
 
     @property
     def expired(self):
         return self.repeat_interval.total_seconds() == 0
 
     def __str__(self):
-        return f'ID: {self.id_}, "{self.event_name}" every ' \
+        return f'ID: {self.id_}, "{self.name}" every ' \
                f'{self.repeat_interval.days} days. Next occurs at ' \
                f'{self.next_time}'

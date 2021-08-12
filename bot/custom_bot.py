@@ -3,6 +3,7 @@ import logging
 import discord
 from discord.ext import commands
 
+from bot.alert.cog_alert import CogAlert
 from bot.registration.cog_registration import CogRegistration
 from bot.settings.cog_settings import CogSettings
 from conf import Conf
@@ -21,8 +22,10 @@ class Bot(commands.Bot):
         self.db = args['db']
         self.cog_settings = CogSettings(self.db)
         self.cog_registration = CogRegistration(self.db)
+        self.cog_alert = CogAlert(self.db)
         self.add_cog(self.cog_settings)
         self.add_cog(self.cog_registration)
+        self.add_cog(self.cog_alert)
 
         @self.check
         def check_channel(ctx):
@@ -70,6 +73,7 @@ class Bot(commands.Bot):
             :param ctx: The Context
             """
             self.cog_registration.save()
+            self.cog_alert.save()
             await ctx.author.send("Saved")
 
         def is_dm_or_priv_role(ctx):

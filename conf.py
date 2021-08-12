@@ -5,10 +5,12 @@ class MasterPermissions:
     class PRIV:
         REGISTRATION = {'summer-proj'}
         SETTINGS = REGISTRATION  # Set to equal for now nothing more needed
+        ALERT = SETTINGS
         TOP = SETTINGS
 
     class Channels:
         REGISTRATION = {'software-summer-project'}
+        ALERT = REGISTRATION
         TOP_ONLY = REGISTRATION
         TOP = TOP_ONLY.union(REGISTRATION).union(REGISTRATION)
         SETTINGS = TOP
@@ -16,6 +18,7 @@ class MasterPermissions:
 
 class DBKeys:  # Database key values
     REGISTRATION = 'registration'
+    ALERT = 'alert'
 
 
 class Conf:
@@ -121,3 +124,24 @@ class Conf:
         class Permissions:
             PRIV_ROLES = MasterPermissions.PRIV.REGISTRATION
             ALLOWED_CHANNELS = MasterPermissions.Channels.REGISTRATION
+
+    class Alert:
+        BASE_GROUP = {'name': 'a',
+                      'help': 'Grouping for Alert Commands',
+                      'invoke_without_command': True}
+
+        class Command:
+            CREATE = {
+                'name': 'create',
+                'help': 'Creates a new event'}
+
+            REMOVE = {
+                'name': 'rem',
+                'help': 'Remove an even'}
+            DISPLAY = {
+                'name': 'disp',
+                'help': 'Display currently configured events'}
+
+        class Permissions:
+            PRIV_ROLES = MasterPermissions.PRIV.ALERT
+            ALLOWED_CHANNELS = MasterPermissions.Channels.ALERT

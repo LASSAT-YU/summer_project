@@ -126,6 +126,8 @@ class Conf:
             ALLOWED_CHANNELS = MasterPermissions.Channels.REGISTRATION
 
     class Alert:
+        ALERT_CHANNEL_ID = 865055003793162250
+        ALERT_POLL_INTERVAL = 60
         BASE_GROUP = {'name': 'a',
                       'help': 'Grouping for Alert Commands',
                       'invoke_without_command': True}
@@ -137,10 +139,14 @@ class Conf:
 
             REMOVE = {
                 'name': 'rem',
-                'help': 'Remove an even'}
+                'help': 'Remove an event'}
             DISPLAY = {
                 'name': 'disp',
                 'help': 'Display currently configured events'}
+            SET_LEAD = {
+                'name': 'set_lead',
+                'help': 'Sets the number of minutes before an event that the '
+                        'notification is sent'}
 
         class Permissions:
             PRIV_ROLES = MasterPermissions.PRIV.ALERT

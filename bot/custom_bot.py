@@ -22,7 +22,7 @@ class Bot(commands.Bot):
         self.db = args['db']
         self.cog_settings = CogSettings(self.db)
         self.cog_registration = CogRegistration(self.db)
-        self.cog_alert = CogAlert(self.db)
+        self.cog_alert = CogAlert(self.db, self)
         self.add_cog(self.cog_settings)
         self.add_cog(self.cog_registration)
         self.add_cog(self.cog_alert)

@@ -25,7 +25,7 @@ class DBKeys:  # Database key values
 
 class Conf:
     BOT_DESCRIPTION = "LSat BOT"
-    VERSION = '1.0'
+    VERSION = '1.0.1'
     LOG_LEVEL = logging.INFO
     COMMAND_PREFIX = 'cb'  # CubeBot
     SAVE_CACHE_DELAY = 30  # Minimum number of seconds between saves
@@ -130,9 +130,7 @@ class Conf:
     class Alert:
         DEF_TZ = timezone.utc
         ALERT_MSG = Template(
-            # TODO: Uncomment
-            # '$role "$event_name" starts at $next_time.\n'
-            '"$event_name" starts at $next_time.\n'
+            '$role "$event_name" starts at $next_time.\n'
             'This event is in $time_delta from now\n'
             '$final_notice')
         ALERT_CHANNEL_ID = 865055003793162250

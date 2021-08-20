@@ -1,5 +1,5 @@
 import logging
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from typing import List
 
 from discord.ext import commands
@@ -115,3 +115,15 @@ class Alert:
         else:
             self._next_alert_target = self.next_event.next_time \
                                       - timedelta(minutes=self.lead_time)
+
+    def set_def_tz(self, tz_offset_hours, tz_offset_minutes):
+        if abs(tz_offset_hours) >= 24:
+            raise commands.errors.UserInputError(
+                f'Hours must be in range -23 to 23 but {tz_offset_hours} '
+                f'received')
+        if abs(tz_offset_minutes) >= 60:
+            raise commands.errors.UserInputError(
+                f'Minutes must be in range -59 to 59 but {tz_offset_minutes} '
+                f'received')
+        self.def_tz = timezone(
+            timedelta(hours=tz_offset_hours, minutes=tz_offset_minutes))

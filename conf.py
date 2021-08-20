@@ -157,6 +157,10 @@ class Conf:
                 'name': 'set_lead',
                 'help': 'Sets the number of minutes before an event that the '
                         'notification is sent'}
+            SET_TZ = {
+                'name': 'set_tz',
+                'help': 'Sets default timezone to be used by the bot if a '
+                        'timezone for an event is not provided'}
 
         class Permissions:
             PRIV_ROLES = MasterPermissions.PRIV.ALERT

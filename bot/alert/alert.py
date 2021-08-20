@@ -89,7 +89,8 @@ class Alert:
         return result
 
     def __str__(self):
-        result = f"Bot's current time is {datetime.now(self.def_tz)}\n\n"
+        result = f"Bot's time in default timezone is " \
+                 f"{datetime.now(self.def_tz)}\n\n"
         if self.next_event is not None:
             time_to_target = self._next_alert_target - datetime.now(
                 self.def_tz)

@@ -89,10 +89,13 @@ class Alert:
         return result
 
     def __str__(self):
-        result = '' \
-            if self.next_event is None else \
-            f'Next alert at {self._next_alert_target} ' \
-            f'for event ID: {self.next_event.id_}\n\n'
+        result = f"Bot's current time is {datetime.now(self.def_tz)}\n\n"
+        if self.next_event is not None:
+            time_to_target = self._next_alert_target - datetime.now(
+                self.def_tz)
+            result += f'Next alert at {self._next_alert_target}' \
+                      f' for event ID: {self.next_event.id_}' \
+                      f' in {time_to_target}\n\n'
         result += f'Events:\n'
         for event in self.data:
             result += f'- {event}\n'

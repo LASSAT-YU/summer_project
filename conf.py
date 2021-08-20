@@ -130,9 +130,9 @@ class Conf:
     class Alert:
         DEF_TZ = timezone.utc
         ALERT_MSG = Template(
+            # TODO: Uncomment
             # '$role "$event_name" starts at $next_time.\n'
             '"$event_name" starts at $next_time.\n'
-            'Bot\'s current time is $time_now\n'
             'This event is in $time_delta from now\n'
             '$final_notice')
         ALERT_CHANNEL_ID = 865055003793162250

@@ -1,4 +1,6 @@
 import logging
+from datetime import timezone
+from string import Template
 
 
 class MasterPermissions:
@@ -23,7 +25,7 @@ class DBKeys:  # Database key values
 
 class Conf:
     BOT_DESCRIPTION = "LSat BOT"
-    VERSION = '0.1'
+    VERSION = '1.0'
     LOG_LEVEL = logging.INFO
     COMMAND_PREFIX = 'cb'  # CubeBot
     SAVE_CACHE_DELAY = 30  # Minimum number of seconds between saves
@@ -126,6 +128,13 @@ class Conf:
             ALLOWED_CHANNELS = MasterPermissions.Channels.REGISTRATION
 
     class Alert:
+        DEF_TZ = timezone.utc
+        ALERT_MSG = Template(
+            # TODO: Uncomment
+            # '$role "$event_name" starts at $next_time.\n'
+            '"$event_name" starts at $next_time.\n'
+            'This event is in $time_delta from now\n'
+            '$final_notice')
         ALERT_CHANNEL_ID = 865055003793162250
         ALERT_ROLE_ID = 867545138083659796
         ALERT_POLL_INTERVAL = 60
@@ -148,6 +157,10 @@ class Conf:
                 'name': 'set_lead',
                 'help': 'Sets the number of minutes before an event that the '
                         'notification is sent'}
+            SET_TZ = {
+                'name': 'set_tz',
+                'help': 'Sets default timezone to be used by the bot if a '
+                        'timezone for an event is not provided'}
 
         class Permissions:
             PRIV_ROLES = MasterPermissions.PRIV.ALERT

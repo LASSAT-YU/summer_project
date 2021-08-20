@@ -83,3 +83,11 @@ class CogAlert(CogCommon, name='Alert'):
         self.save()
         await ctx.send(
             f'Lead time set to {lead_time_in_min} minutes before the event')
+
+    @base.command(**conf.Command.SET_TZ)
+    @commands.has_any_role(*conf.Permissions.PRIV_ROLES)
+    async def set_tz(self, ctx, tz_offset_hours: int,
+                     tz_offset_minutes: int = 0):
+        self.data.set_def_tz(tz_offset_hours, tz_offset_minutes)
+        self.save()
+        await self.send_data_str(ctx, f'Timezone updated')

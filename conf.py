@@ -128,7 +128,10 @@ class Conf:
 
     class Alert:
         ALERT_MSG = Template(
-            '$role "$event_name" starts at $next_time$final_notice')
+            '$role "$event_name" starts at $next_time.\n'
+            'Bot\'s current time is $time_now\n'
+            'This event is in $time_delta from now\n'
+            '$final_notice')
         ALERT_CHANNEL_ID = 865055003793162250
         ALERT_ROLE_ID = 867545138083659796
         ALERT_POLL_INTERVAL = 60

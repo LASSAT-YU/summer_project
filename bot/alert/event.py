@@ -24,6 +24,8 @@ class Event:
             role=f'<@&{Conf.Alert.ALERT_ROLE_ID}>',
             event_name=self.name,
             next_time=self.next_time,
+            time_now=datetime.now(),
+            time_delta=self.next_time - datetime.now(),
             final_notice=
             '' if not self.expired else
             ' (FINAL OCCURRENCE)')

@@ -1,4 +1,5 @@
 import logging
+from datetime import timezone
 from string import Template
 
 
@@ -127,8 +128,10 @@ class Conf:
             ALLOWED_CHANNELS = MasterPermissions.Channels.REGISTRATION
 
     class Alert:
+        DEF_TZ = timezone.utc
         ALERT_MSG = Template(
-            '$role "$event_name" starts at $next_time.\n'
+            # '$role "$event_name" starts at $next_time.\n'
+            '"$event_name" starts at $next_time.\n'
             'Bot\'s current time is $time_now\n'
             'This event is in $time_delta from now\n'
             '$final_notice')

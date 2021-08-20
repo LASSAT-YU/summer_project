@@ -7,6 +7,7 @@ from discord.ext import commands
 from bot.alert.event import Event
 from bot.common.user_custom import UserCustom
 from conf import Conf
+from utils.datetime_sup import make_aware
 from utils.log import log
 
 
@@ -17,9 +18,11 @@ class Alert:
         self._next_event = None
         self._next_alert_target = None
         self.next_id = 0
+        self.def_tz = Conf.Alert.DEF_TZ
 
     def create(self, user: UserCustom, repeat_interval: int, name: str,
                next_time: datetime):
+        next_time = make_aware(next_time, self.def_tz)
         if repeat_interval < 0:
             raise commands.errors.UserInputError(
                 f'Repeat interval must be 0 for once only or greater but '
@@ -66,7 +69,7 @@ class Alert:
         result = False
         try:
             if self._next_alert_target is not None:
-                if datetime.now() > self._next_alert_target:
+                if datetime.now(self.def_tz) > self._next_alert_target:
                     channel = bot.get_channel(Conf.Alert.ALERT_CHANNEL_ID)
                     await channel.send(self.next_event.alert_text())
                     result = True

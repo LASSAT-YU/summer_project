@@ -1,4 +1,5 @@
 import logging
+from string import Template
 
 
 class MasterPermissions:
@@ -126,6 +127,8 @@ class Conf:
             ALLOWED_CHANNELS = MasterPermissions.Channels.REGISTRATION
 
     class Alert:
+        ALERT_MSG = Template(
+            '$role "$event_name" starts at $next_time$final_notice')
         ALERT_CHANNEL_ID = 865055003793162250
         ALERT_ROLE_ID = 867545138083659796
         ALERT_POLL_INTERVAL = 60

@@ -20,9 +20,13 @@ class Event:
         return NotImplemented
 
     def alert_text(self):
-        return f'<@&{Conf.Alert.ALERT_ROLE_ID}> "{self.name}" starts at ' \
-               f'{self.next_time}' \
-               + ('' if not self.expired else ' (FINAL OCCURRENCE)')
+        return Conf.Alert.ALERT_MSG.substitute(
+            role=f'<@&{Conf.Alert.ALERT_ROLE_ID}>',
+            event_name=self.name,
+            next_time=self.next_time,
+            final_notice=
+            '' if not self.expired else
+            ' (FINAL OCCURRENCE)')
 
     def advance_alert_time(self):
         if not self.expired:

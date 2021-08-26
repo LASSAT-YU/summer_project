@@ -25,7 +25,7 @@ class DBKeys:  # Database key values
 
 class Conf:
     BOT_DESCRIPTION = "LSat BOT"
-    VERSION = '1.0.1'
+    VERSION = '1.1'
     LOG_LEVEL = logging.INFO
     COMMAND_PREFIX = 'cb'  # CubeBot
     SAVE_CACHE_DELAY = 30  # Minimum number of seconds between saves
@@ -75,7 +75,6 @@ class Conf:
                       'invoke_without_command': True}
 
         class Command:
-            # TODO Allow option to allow registration to only one category
             # TODO Add option to set default category
             # TODO Add option to set category commands to require priv
             # TODO Add option to restrict use of all

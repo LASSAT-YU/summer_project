@@ -7,10 +7,12 @@ from bot.registration.category import Category
 
 
 class Registration:
-    def __init__(self):
+    def __init__(self, are_mutually_exclusive_events: bool = False):
         self.message = ""
         self.categories = {1: Category(number=1)}
         self.max_cat_num = 1
+        self.are_mutually_exclusive_events = are_mutually_exclusive_events
+        self.user_cat_dict = {}
 
     def category_new(self, name: str, number: int):
         if number < 0:
@@ -26,6 +28,10 @@ class Registration:
         if len(self.categories) == 1:
             raise commands.errors.UserInputError(
                 'Unable to remove only one category left')
+        if self.are_mutually_exclusive_events:
+            # Clear out users from dict
+            for user in self.categories[number]:
+                self.user_cat_dict.pop(user)
         self.categories.pop(number)
         if number == self.max_cat_num:
             # Max removed find new max
@@ -38,6 +44,16 @@ class Registration:
     def resolve_cat_number(self,
                            cat_number:
                            Union[int, str]) -> Union[int, List[int]]:
+        """
+        Resolves an input into a valid category number or list of category 
+        numbers.
+        - None: Only available category or an error
+        - "all": If events are not mutually exclusive returns all category 
+                numbers
+        - single int: Returns the input
+        :param cat_number: The value to be resolved
+        :return: A valid category number or list of category numbers
+        """
         if cat_number is None:
             if len(self.categories) == 1:
                 assert self.max_cat_num in self.categories
@@ -49,7 +65,12 @@ class Registration:
         else:
             if isinstance(cat_number, str):
                 if cat_number == 'all':
-                    return [x for x in self.categories.keys()]
+                    if self.are_mutually_exclusive_events:
+                        raise commands.errors.UserInputError(
+                            f'"all" only allowed if events are not mutually '
+                            f'exclusive')
+                    else:
+                        return [x for x in self.categories.keys()]
                 else:
                     raise commands.errors.UserInputError(
                         f'Expected a category NUMBER or "all" but got '
@@ -59,16 +80,21 @@ class Registration:
                 assert isinstance(cat_number, int)
                 return cat_number
 
-    def register(self, user: UserCustom, cat_number: Union[int, str]):
+    def register(self, user: UserCustom, cat_number: Union[int, str, None]):
         cat_number = self.resolve_cat_number(cat_number)
         if isinstance(cat_number, List):
             for x in cat_number:
                 self.register(user, x)
             return  # Do nothing more already called
         self.confirm_cat_exists(cat_number, True)
+        if self.are_mutually_exclusive_events:
+            # Check if user is already registered
+            if user in self.user_cat_dict:
+                self.unregister(user, self.user_cat_dict[user])
+            self.user_cat_dict[user] = cat_number
         self.categories[cat_number].add(user)
 
-    def unregister(self, user: UserCustom, cat_number: Union[int, str]):
+    def unregister(self, user: UserCustom, cat_number: Union[int, str, None]):
         cat_number = self.resolve_cat_number(cat_number)
         if isinstance(cat_number, List):
             for x in cat_number:
@@ -77,6 +103,7 @@ class Registration:
 
         self.confirm_cat_exists(cat_number, True)
         self.categories[cat_number].remove(user)
+        self.user_cat_dict.pop(user, "No Exception If Not Present")
 
     def set_msg(self, msg: str):
         self.message = msg
@@ -84,7 +111,9 @@ class Registration:
     def __str__(self):
 
         total_users = 0
-        result = f'REGISTRATION\n{self.message}\n\n'
+        result = f'REGISTRATION (' \
+                 f'{"" if self.are_mutually_exclusive_events else "NOT "}' \
+                 f'MUTUALLY EXCLUSIVE)\n{self.message}\n\n'
         for key in self.categories.keys():
             total_users += len(self.categories[key])
             result += f'{self.categories[key]}\n'

@@ -75,7 +75,6 @@ class Conf:
                       'invoke_without_command': True}
 
         class Command:
-            # TODO Allow option to allow registration to only one category
             # TODO Add option to set default category
             # TODO Add option to set category commands to require priv
             # TODO Add option to restrict use of all

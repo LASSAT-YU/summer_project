@@ -129,7 +129,7 @@ class Conf:
             '$role "$event_name" starts at $next_time.\n'
             'This event is in $time_delta from now\n'
             '$final_notice')
-        ALERT_CHANNEL_ID = 865055003793162250
+        ALERT_CHANNEL_ID = 747915319149854890
         ALERT_ROLE_ID = 867545138083659796
         ALERT_POLL_INTERVAL = 60
         BASE_GROUP = {'name': 'a',

@@ -75,9 +75,6 @@ class Conf:
                       'invoke_without_command': True}
 
         class Command:
-            # TODO Add option to set default category
-            # TODO Add option to set category commands to require priv
-            # TODO Add option to restrict use of all
             REGISTER = {
                 'name': 'reg',
                 'help': 'Registers you for the category specified (If only '

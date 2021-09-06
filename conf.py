@@ -11,7 +11,7 @@ class MasterPermissions:
         TOP = SETTINGS
 
     class Channels:
-        REGISTRATION = {'software-summer-project'}
+        REGISTRATION = {'software'}
         ALERT = REGISTRATION
         TOP_ONLY = REGISTRATION
         TOP = TOP_ONLY.union(REGISTRATION).union(REGISTRATION)
@@ -25,7 +25,7 @@ class DBKeys:  # Database key values
 
 class Conf:
     BOT_DESCRIPTION = "LSat BOT"
-    VERSION = '1.1'
+    VERSION = '1.2'
     LOG_LEVEL = logging.INFO
     COMMAND_PREFIX = 'cb'  # CubeBot
     SAVE_CACHE_DELAY = 30  # Minimum number of seconds between saves
@@ -75,9 +75,6 @@ class Conf:
                       'invoke_without_command': True}
 
         class Command:
-            # TODO Add option to set default category
-            # TODO Add option to set category commands to require priv
-            # TODO Add option to restrict use of all
             REGISTER = {
                 'name': 'reg',
                 'help': 'Registers you for the category specified (If only '
@@ -129,11 +126,10 @@ class Conf:
     class Alert:
         DEF_TZ = timezone.utc
         ALERT_MSG = Template(
-            '$role "$event_name" starts at $next_time.\n'
+            '"$event_name" starts at $next_time.\n'
             'This event is in $time_delta from now\n'
             '$final_notice')
-        ALERT_CHANNEL_ID = 865055003793162250
-        ALERT_ROLE_ID = 867545138083659796
+        ALERT_CHANNEL_ID = 747915319149854890
         ALERT_POLL_INTERVAL = 60
         BASE_GROUP = {'name': 'a',
                       'help': 'Grouping for Alert Commands',

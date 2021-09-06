@@ -21,7 +21,6 @@ class Event:
 
     def alert_text(self):
         return Conf.Alert.ALERT_MSG.substitute(
-            role=f'<@&{Conf.Alert.ALERT_ROLE_ID}>',
             event_name=self.name,
             next_time=self.next_time,
             time_delta=self.next_time - datetime.now(self.tz),

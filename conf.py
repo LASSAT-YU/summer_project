@@ -11,7 +11,7 @@ class MasterPermissions:
         TOP = SETTINGS
 
     class Channels:
-        REGISTRATION = {'software-summer-project'}
+        REGISTRATION = {'software'}
         ALERT = REGISTRATION
         TOP_ONLY = REGISTRATION
         TOP = TOP_ONLY.union(REGISTRATION).union(REGISTRATION)

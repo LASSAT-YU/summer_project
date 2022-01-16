@@ -25,7 +25,7 @@ class DBKeys:  # Database key values
 
 class Conf:
     BOT_DESCRIPTION = "LSat BOT"
-    VERSION = '1.2'
+    VERSION = '1.3'
     LOG_LEVEL = logging.INFO
     COMMAND_PREFIX = 'cb'  # CubeBot
     SAVE_CACHE_DELAY = 30  # Minimum number of seconds between saves

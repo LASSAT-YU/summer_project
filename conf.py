@@ -126,7 +126,7 @@ class Conf:
     class Alert:
         DEF_TZ = timezone.utc
         ALERT_MSG = Template(
-            '<@&932095009308692510> "$event_name" starts at $next_time.\n'
+            '<@&747938666667835393> "$event_name" starts at $next_time.\n'
             'This event is in $time_delta from now\n'
             '$final_notice')
         ALERT_CHANNEL_ID = 747915319149854890
